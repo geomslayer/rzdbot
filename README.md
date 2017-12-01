@@ -3,14 +3,12 @@
 ### Description
 
 This is a simple project for personal use. It just monitoring presence
-of econom-class seats in certain train at certain dates.
+of economy-class seats in certain train at certain dates.
 
 The Telegram bot will alarm with a message if a ticket will show up.
 
-### Install
+### Install and launch
 
-Use docker for install:
+First, install `docker`.
 
-Build image: `docker build -t rzd_bot .`
-
-Run container: `docker run -d rzd_bot`
+Then run `sh launch.sh`

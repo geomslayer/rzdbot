@@ -2,6 +2,7 @@ import config
 import logging
 import telebot
 import time
+from itertools import product
 from threading import Thread
 from checker import Checker
 
@@ -24,14 +25,16 @@ def polling():
 def parsing():
     checker = Checker()
     while True:
-        for date in config.DESIRED_DATES:
-            found = checker.check(date)
+        for train, date in product(config.TRAINS, config.DESIRED_DATES):
+            found = checker.check(train, date)
             if found:
                 logging.info('[App] A ticket was found! Congratulations!')
-                bot.send_message(config.MY_CHAT_ID, 'Hey, we found a ticket in {}!'.format(date))
+                msg = 'Hey, we found a ticket on train {} at {}!'.format(train.desc, date)
+                bot.send_message(config.MY_CHAT_ID, msg)
             else:
                 logging.info('[App] Not found yet...')
-                # bot.send_message(config.chat_id, 'Sorry, we couldn\'t find a ticket in {}...'.format(date))
+                # msg = 'Sorry, we couldn\'t find a ticket on train {} at {}...'.format(train.desc, date)
+                # bot.send_message(config.MY_CHAT_ID, msg)
 
         logging.info('[App] Script went to sleep.')
         time.sleep(60)

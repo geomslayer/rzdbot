@@ -1,14 +1,9 @@
 import time
-from config import URL
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 
 
 class Checker:
-    @staticmethod
-    def get_url(date):
-        return URL.format(date=date)
-
     @staticmethod
     def check_type(seat_type):
         seat_type = seat_type.lower()
@@ -19,9 +14,10 @@ class Checker:
         self.driver.set_script_timeout(10)
         self.driver.set_page_load_timeout(10)
 
-    def check(self, date='29.12.2017'):
+    def check(self, train, date):
         try:
-            self.driver.get(Checker.get_url(date))
+            url = train.url.format(date=date)
+            self.driver.get(url)
         except TimeoutException:
             pass
         # sleeping because of selenium's weird behavior
