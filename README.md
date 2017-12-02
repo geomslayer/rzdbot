@@ -12,3 +12,11 @@ The Telegram bot will alarm with a message if a ticket will show up.
 First, install `docker`.
 
 Then run `sh launch.sh`
+
+### P.S.
+
+On the same day this bot has been launched it found a sitting type ticket at evening.
+And I bought it as soon as possible.
+So I guess this writing this bot wasn't worthless.
+
+<img src="https://preview.ibb.co/i0p4Nw/Screenshot_20171202_092853.png" width="350px">
