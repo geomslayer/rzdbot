@@ -19,4 +19,4 @@ On the same day this bot has been launched it found a sitting type ticket at eve
 And I bought it as soon as possible.
 So I guess this writing this bot wasn't worthless.
 
-<img src="https://preview.ibb.co/i0p4Nw/Screenshot_20171202_092853.png" width="350px">
+<img src="https://image.ibb.co/cwwb9b/Screenshot_20171207_205150.png" width="350px">
