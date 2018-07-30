@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-TOKEN = '468912639:AAFtOWCNtXv7x7TkFfekJkzF-skxSEeS72g'
+TOKEN = 'put token here'
 
 Train = namedtuple('Train', 'url desc')
 
