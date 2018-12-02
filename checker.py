@@ -3,11 +3,14 @@
 import time
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.firefox.options import Options
 
 
 class Checker:
     def __init__(self):
-        self.driver = webdriver.Firefox()
+        options = Options()
+        options.headless = True
+        self.driver = webdriver.Firefox(options=options)
         self.driver.set_script_timeout(10)
         self.driver.set_page_load_timeout(10)
 
@@ -32,10 +35,10 @@ class Checker:
 
 
 def main():
-    from config import TRAINS, DESIRED_DATES
+    from config import TRAINS
 
     checker = Checker()
-    print(checker.check(TRAINS[0], DESIRED_DATES[0]))
+    print(checker.check_seats(TRAINS[0], TRAINS[0].dates[0]))
 
     time.sleep(60)
 

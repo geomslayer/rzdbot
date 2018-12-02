@@ -5,12 +5,26 @@ import logging
 import telebot
 import time
 from datetime import datetime
-from itertools import product
 from threading import Thread
 from checker import Checker
 
 bot = telebot.TeleBot(config.TOKEN)
 last_check = None
+
+
+@bot.message_handler(commands=['disable'])
+def send_welcome(message):
+    if message.chat.id != config.MY_CHAT_ID:
+        bot.send_message(message.chat.id, 'Sorry, you are not elite.')
+        return
+
+    train_id = message.text[len('/disable'):].strip().lower()
+    if not train_id:
+        bot.send_message(config.MY_CHAT_ID, 'Usage: /disable {train_id}')
+        return
+
+    config.TRAINS = [t for t in config.TRAINS if t.id.lower() != train_id]
+    bot.send_message(config.MY_CHAT_ID, 'Disabled search for {}'.format(train_id))
 
 
 @bot.message_handler(content_types=["text"])
@@ -45,19 +59,20 @@ def parsing():
         try:
             checker = Checker()
             while True:
-                for train, date in product(config.TRAINS, config.DESIRED_DATES):
-                    found = checker.check_seats(train, date)
-                    last_check = datetime.now()
-                    if found:
-                        msg = 'Hey, we found a ticket on train {} at {}!\nGo buy it: {}' \
-                            .format(train.desc, date, train.url.format(date=date))
-                        bot.send_message(config.MY_CHAT_ID, msg)
-                    else:
-                        pass
-                        # msg = 'Sorry, we haven\'t found a ticket on the train {} at {} yet...'.format(train.desc, date)
-                        # bot.send_message(config.MY_CHAT_ID, msg)
-                    time.sleep(5)
-                time.sleep(60)
+                for train in config.TRAINS:
+                    for date in train.dates:
+                        found = checker.check_seats(train, date)
+                        last_check = datetime.now()
+                        if found:
+                            msg = 'Hey, we found a ticket on train {id}: {desc} at {date}!\nGo buy it: {url}' \
+                                .format(id=train.id, desc=train.desc, date=date, url=train.url.format(date=date))
+                            bot.send_message(config.MY_CHAT_ID, msg)
+                        else:
+                            pass
+                            # msg = 'Sorry, we haven\'t found a ticket on the train {} at {} yet...'.format(train.desc, date)
+                            # bot.send_message(config.MY_CHAT_ID, msg)
+                        time.sleep(5)
+                time.sleep(config.CHECKING_DELAY)
         except Exception as e:
             logging.error('Got error while checking: {}'.format(e))
             pass
