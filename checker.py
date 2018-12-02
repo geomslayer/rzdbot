@@ -1,34 +1,44 @@
+# coding: utf-8
+
 import time
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 
 
 class Checker:
-    @staticmethod
-    def check_type(seat_type):
-        seat_type = seat_type.lower()
-        return seat_type == 'плацкартный' or seat_type == 'сидячий'
-
     def __init__(self):
         self.driver = webdriver.Firefox()
         self.driver.set_script_timeout(10)
         self.driver.set_page_load_timeout(10)
 
-    def check(self, train, date):
+    def check_seats(self, train, date):
         try:
             url = train.url.format(date=date)
             self.driver.get(url)
         except TimeoutException:
-            pass
+            return False
         # sleeping because of selenium's weird behavior
         time.sleep(5)
-        elements = self.driver.find_elements_by_class_name('route-carType-item')
-        for element in elements:
-            seat_type = element.find_element_by_class_name('col-xs-10').text
-            if Checker.check_type(seat_type):
-                found = True
-                break
-        else:
-            found = False
+        route_items = self.driver.find_elements_by_class_name('route-item')
+        for item in route_items:
+            train_id = item.find_element_by_css_selector('.route-trtitle-row .route-trnum').text.strip().lower()
+            if train.id != train_id:
+                continue
+            for car_type in item.find_elements_by_class_name('route-carType-item'):
+                seat_type = car_type.find_element_by_class_name('serv-cat').text.strip().lower()
+                if seat_type in train.seat_types:
+                    return True
+        return False
 
-        return found
+
+def main():
+    from config import TRAINS, DESIRED_DATES
+
+    checker = Checker()
+    print(checker.check(TRAINS[0], DESIRED_DATES[0]))
+
+    time.sleep(60)
+
+
+if __name__ == '__main__':
+    main()
